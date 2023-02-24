@@ -1,5 +1,5 @@
 import './index.css'
-import usePeople, { Person } from './Hooks/usePeople'
+import usePeople, { Person } from './hooks/usePeople'
 import { v4 as uuid } from "uuid";
 import clsx from 'clsx';
 
@@ -22,7 +22,7 @@ function PersonForm(prop: formProps) {
     const endAMPM = form.get('end-ampm') as string
 
     const error_output = document.getElementById("error-box");
-
+    const name_val = document.getElementById("first-name");
 
 
     const now = new Date()
@@ -46,6 +46,9 @@ function PersonForm(prop: formProps) {
       if (end.getHours() > 21 || (end.getHours() < 5) || (end.getHours() == 5 && end.getMinutes() === 0)) {
         error_output.textContent = 'End time must be between 5:30am and 9pm';
         return
+      }
+      if (name_val !== null) {
+        name_val.textContent = ''
       }
 
     }
@@ -85,9 +88,9 @@ function PersonForm(prop: formProps) {
                   autoComplete="position-title"
                   className="block w-full rounded-md bg-zinc-900 border-0 py-2 px-3.5 text-sm leading-6 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                 >
-                  <option key={uuid()}>Supervisor</option>
-                  <option key={uuid()}>HeadGuard</option>
                   <option key={uuid()}>Lifeguard</option>
+                  <option key={uuid()}>HeadGuard</option>
+                  <option key={uuid()}>Supervisor</option>
                 </select>
 
               </div>
@@ -112,7 +115,7 @@ function PersonForm(prop: formProps) {
                   <option key={uuid()} value="8">8</option>
                   <option key={uuid()} value="9">9</option>
                   <option key={uuid()} value="10">10</option>
-                  <option key={uuid()} value="11">10</option>
+                  <option key={uuid()} value="11">11</option>
                   <option key={uuid()} value="12">12</option>
                 </select>
                 <span className="text-xl mx-2">:</span>
@@ -156,7 +159,7 @@ function PersonForm(prop: formProps) {
                   <option key={uuid()} value="8">8</option>
                   <option key={uuid()} value="9">9</option>
                   <option key={uuid()} value="10">10</option>
-                  <option key={uuid()} value="11">10</option>
+                  <option key={uuid()} value="11">11</option>
                   <option key={uuid()} value="12">12</option>
                 </select>
                 <span className="text-xl mx-2">:</span>
@@ -227,7 +230,9 @@ function App() {
                   time ?
                     person.position === "HeadGuard" ?
                       "bg-cyan-500" :
-                      "bg-red-400"
+                      person.position === "Supervisor" ?
+                        "bg-purple-600" :
+                        "bg-red-500"
                     : "bg-zinc-900",
                 )}></div>
               ))}
