@@ -224,7 +224,7 @@ function App() {
         <div className={"grid gap-y-2 space-x-0 grid-cols-34 grid-rows-" + (people.length + 1)}>
           {people.map((person: Person) => (
             <>
-              <div className="text-xs text-white text-center my-auto col-span-2" onClick={() => (removePerson(person.name))}>{person.name}</div>
+              <div className="text-xs text-white text-center my-auto col-span-2 hover:line-through hover:text-red-400" onClick={() => (removePerson(person.name))}>{person.name}</div>
               {person.timeSeries.map((time: boolean) => (
                 <div className={"h-9 border-l-2 border-l-white-200 " + clsx(
                   time ?
