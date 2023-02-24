@@ -11,6 +11,18 @@ export type Person = {
 export default function usePeople() {
   const [people, setPeople] = useState<Person[]>([])
 
+  const sortPeople = (people: Person[]) => {
+    return people.sort((a, b) => {
+      if (a.start < b.start) {
+        return -1
+      } else if (a.start > b.start) {
+        return 1
+      } else {
+        return 0
+      }
+    })
+  }
+
   const addPerson = (name: string, start: Date, end: Date, position: string) => {
     const timeOffset = (5 * 2) + 1;
     const timeSeries = Array(32).fill(false)
@@ -19,7 +31,8 @@ export default function usePeople() {
     for (let j = new_start; j < new_end; j++) {
       timeSeries[j] = true
     }
-    setPeople([...people, { name, start, end, position, timeSeries}])
+    
+    setPeople(sortPeople([...people, { name, start, end, position, timeSeries}]))
   }
 
   const removePerson = (name: string) => {
