@@ -1,6 +1,7 @@
 import './index.css'
-import usePeople, { Person } from './hooks/usePeople'
-import { v4 as uuid } from "uuid";
+
+import usePeople, {Person} from './hooks/usePeople'
+import {v4 as uuid} from "uuid";
 import clsx from 'clsx';
 
 type formProps = {
@@ -8,7 +9,7 @@ type formProps = {
 }
 
 function PersonForm(prop: formProps) {
-  const { addPerson } = prop
+  const {addPerson} = prop
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = new FormData(e.currentTarget)
@@ -39,7 +40,7 @@ function PersonForm(prop: formProps) {
         error_output.textContent = 'Start time must be before end time';
         return
       }
-      if (start.getHours() > 21 || (start.getHours() < 5) || (start.getHours() == 5 && start.getMinutes() === 0)) {
+      if (start.getHours() > 21 || (start.getHours() < 5) || (start.getHours() == 5 && (start.getMinutes() === 0 || start.getMinutes() === 15))) {
         error_output.textContent = 'Start time must be between 5:30am and 9pm';
         return
       }
@@ -89,6 +90,8 @@ function PersonForm(prop: formProps) {
                   className="block w-full rounded-md bg-zinc-900 border-0 py-2 px-3.5 text-sm leading-6 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                 >
                   <option key={uuid()}>Lifeguard</option>
+                  <option key={uuid()}>Attendant</option>
+                  <option key={uuid()}>Instructor</option>
                   <option key={uuid()}>HeadGuard</option>
                   <option key={uuid()}>Supervisor</option>
                 </select>
@@ -125,7 +128,9 @@ function PersonForm(prop: formProps) {
                   className="rounded-md bg-zinc-900 border-0 py-2 mr-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                 >
                   <option key={uuid()} value="0">00</option>
+                  <option key={uuid()} value="15">15</option>
                   <option key={uuid()} value="30">30</option>
+                  <option key={uuid()} value="45">45</option>
                 </select>
                 <select
                   name="start-ampm"
@@ -169,7 +174,9 @@ function PersonForm(prop: formProps) {
                   className="rounded-md bg-zinc-900 border-0 py-2 mr-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                 >
                   <option key={uuid()} value="0">00</option>
+                  <option key={uuid()} value="15">15</option>
                   <option key={uuid()} value="30">30</option>
+                  <option key={uuid()} value="45">45</option>
                 </select>
                 <select
                   name="end-ampm"
@@ -200,11 +207,8 @@ function PersonForm(prop: formProps) {
 }
 
 
-
 function App() {
 
-  /* @todo: make a grid of divs with a class of 'box' and a class of 'box-1' to 'box-9' 
-  Use divs then combine and color them with css */
 
   /* I want to make a varible hight array depending on the amount of inputs from the user
 *  I want the bottom row of the array to always be reserved for time broken into 30min spaces
@@ -214,25 +218,34 @@ function App() {
 *  The time between 5:30am to 9:30pm will be the only time that is allowed which is 32 boxes
 *  */
 
-  const { people, addPerson, removePerson } = usePeople();
+  const {people, addPerson, removePerson} = usePeople();
 
 
   return (
-    <div className="bg-zinc-800 text-white h-screen">
+    <div className="bg-zinc-800 text-white min-h-screen">
       <div className="container mx-auto sm:px-6 lg:px-8">
-        <PersonForm addPerson={addPerson} />
-        <div className={"grid gap-y-2 space-x-0 grid-cols-34 grid-rows-" + (people.length + 1)}>
+        <PersonForm addPerson={addPerson}/>
+        <div className={"grid gap-y-2 space-x-0 grid-cols-66 grid-rows-" + (people.length + 1)}>
           {people.map((person: Person) => (
             <>
-              <div className="text-xs text-white text-center my-auto col-span-2 hover:line-through hover:text-red-400" onClick={() => (removePerson(person.name))}>{person.name}</div>
-              {person.timeSeries.map((time: boolean) => (
-                <div className={"h-9 border-l-2 border-l-white-200 " + clsx(
+              <div className="text-xs text-white text-center my-auto col-span-2 hover:line-through hover:text-red-400"
+                   onClick={() => (removePerson(person.name))}>{person.name}</div>
+              {person.timeSeries.map((time: boolean, index: number) => (
+                <div className={"h-9 border-l-white-200 " + clsx(
+                  (index * (2 * 15)) % 60 === 0 ?
+                    "border-l-2 " :
+                    " "
+                ) + clsx(
                   time ?
                     person.position === "HeadGuard" ?
                       "bg-cyan-500" :
-                      person.position === "Supervisor" ?
-                        "bg-purple-600" :
-                        "bg-red-500"
+                      person.position === "Instructor" ?
+                        "bg-red-500" :
+                        person.position === "Attendant" ?
+                          "bg-green-500" :
+                          person.position === "Supervisor" ?
+                            "bg-purple-600" :
+                            "bg-orange-500"
                     : "bg-zinc-900",
                 )}></div>
               ))}
@@ -241,7 +254,7 @@ function App() {
           <div className="text-xs text-white text-center my-auto col-span-2">Time</div>
           {Array(16).fill(0).map((_, x) =>
             <>
-              <div className="text-xs text-white text-center my-auto col-span-2">{(x + 5) % 12 + 1}:00</div>
+              <div className="text-xs text-white text-center my-auto col-span-4">{(x + 5) % 12 + 1}:00</div>
             </>
           )}
 

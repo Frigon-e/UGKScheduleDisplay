@@ -24,10 +24,11 @@ export default function usePeople() {
   }
 
   const addPerson = (name: string, start: Date, end: Date, position: string) => {
-    const timeOffset = (5 * 2) + 1;
-    const timeSeries = Array(32).fill(false)
-    const new_start =  (start.getHours() * 2 + (start.getMinutes() / 30)) - timeOffset
-    const new_end =  (end.getHours() * 2 + (end.getMinutes() / 30)) - timeOffset
+    const timeOffset = (5 * 4) + 2;
+    const timeSeries = Array(64).fill(false)
+    const new_start =  (start.getHours() * 4 + (start.getMinutes() / 15)) - timeOffset
+    console.log(new_start)
+    const new_end =  (end.getHours() * 4 + (end.getMinutes() / 15)) - timeOffset
     for (let j = new_start; j < new_end; j++) {
       timeSeries[j] = true
     }
